@@ -13,7 +13,7 @@ A small fictional service assistant, built step by step over four days in Google
 |---|---|---|
 | 1 | Foundations: synthetic directory, mock client, `ask`, response contract | Done |
 | 1 (extra) | Real-model demo with FLAN-T5 small on CPU | Done |
-| 2 | Structure and tools: validated ticket, read-only status lookup, ownership check | Planned |
+| 2 | Structure and tools: validated ticket, read-only status lookup, ownership check | Done |
 | 3 | Guard and test: versioned prompt, input guards, pipeline, golden cases | Planned |
 | 4 | Measure and finish: public cache, measurements, regression, export | Planned |
 
@@ -21,9 +21,9 @@ A small fictional service assistant, built step by step over four days in Google
 
 | File | Description |
 |---|---|
-| [`Murshid_lab1.ipynb`](Murshid_lab1.ipynb) | Core project notebook, Day 1 (cells 1–3). Later days are appended to this same notebook. |
+| [`Murshid_lab1-2.ipynb`](Murshid_lab1-2.ipynb) | Core project notebook, Days 1–2. Later days are appended to this same notebook. |
 | [`live_model_demo.ipynb`](live_model_demo.ipynb) | Optional, separate notebook: a real model generating one answer on CPU. |
-| `murshid_outputs/baseline_results.json` | Day 1 results saved by the notebook (generated when it runs). |
+| [`murshid_outputs/`](murshid_outputs) | JSON results saved by the notebook: `baseline_results.json` (Day 1) and `day2_results.json` (Day 2). |
 
 ## Day 1 — what I built
 
@@ -40,6 +40,26 @@ A small fictional service assistant, built step by step over four days in Google
 | `ساعدني` | `ما الخدمة التي تحتاج مساعدة بشأنها؟` |
 
 All checks passed. `trace_id` values and `latency_ms` vary between runs, which is expected.
+
+## Day 2 — what I built
+
+Added to the same notebook, below Day 1:
+
+1. **Synthetic records and ticket.** Two fictional records (`REF-1001` owned by `demo-user-1`, `REF-1002` owned by `demo-user-2`), a trusted session identity, `extract_ticket` (simple rules and regex, not general NLP) and `validate_ticket` (exact keys, types, allowed values, and clarification consistency).
+2. **Read-only tool and routing.** `check_status` looks up a record and checks ownership before returning any status. `route` refuses cancellation, asks for clarification when the reference number is missing, and sends status requests to the tool.
+3. **Verification.** Five reference cases, a Day 1 regression check, and a check that the records are unchanged. Results are saved to `murshid_outputs/day2_results.json`.
+
+### Day 2 results
+
+| Question | Code | Tool calls |
+|---|---|---:|
+| `ما حالة طلبي REF-1001 في الرياض؟` | `under_review` | 1 |
+| `أريد حالة طلبي` (no reference) | `needs_clarification` | 0 |
+| `ما حالة REF-9999؟` (absent record) | `not_found` | 1 |
+| `ألغ طلبي REF-1001` (cancellation) | `unsupported_action` | 0 |
+| `ما حالة REF-1002؟` (another user's record) | `access_denied` | 1 |
+
+Missing and unauthorized records both give the user the same outward message, so another user's status is never revealed. The identity check is a teaching fixture, not real authentication.
 
 ## Extra: real-model demonstration
 
@@ -60,8 +80,8 @@ This is one observation, not a benchmark. A non-empty answer is not proof of cor
 
 ## How to run
 
-1. Open `Murshid_lab1.ipynb` in [Google Colab](https://colab.research.google.com/) (the badge at the top of the notebook does this) with a Python 3.9+ CPU runtime.
-2. Run the cells in order from the top. Nothing needs installing.
+1. Open `Murshid_lab1-2.ipynb` in [Google Colab](https://colab.research.google.com/) (File → Open notebook → GitHub, paste this repository's URL) with a Python 3.9+ CPU runtime.
+2. Run the cells in order from the top; Day 2 depends on Day 1. Nothing needs installing.
 3. For the optional demo, open `live_model_demo.ipynb` in a **separate** runtime and run the setup cell first. If Colab asks for a restart, restart and run all cells again.
 
 ## Limitations
