@@ -1,119 +1,188 @@
-# 🤖 Murshid Mini — AI-Powered Service Assistant
+# 🤖 Murshid Mini — LLM Application Engineering Project
 
-**LLM Application Engineering | SDA-AIE-213**  
+**Course:** LLM Application Engineering (SDA-AIE-213)  
 **Instructor:** Meaad Al-Marri  
 **Developer:** Jana Kariri
 
+## 📌 Project Overview
+
+Murshid Mini is a fictional AI-powered service assistant developed as a four-day learning project using Python and Google Colab.
+
+The project explores how to build an assistant that understands service-related questions, retrieves application statuses through controlled tools, validates user requests, and handles responses safely.
+
+The project is designed to demonstrate the engineering concepts behind LLM applications, from basic question handling to testing, safety, and performance evaluation.
+
+**Important:** The core application uses a deterministic mock client (`FakeClient`) rather than a live LLM. A separate notebook demonstrates a real language model.
+
 ---
 
-## 📌 Overview
+## 📅 Project Development Journey
 
-Murshid Mini is an educational AI application engineering project that demonstrates how to build a structured service assistant capable of understanding user requests, answering frequently asked questions, and retrieving application statuses through controlled tool interactions.
+The project is organized into four development days, with each day focusing on a different stage of LLM application engineering.
 
-The project focuses on building reliable AI application workflows, with particular attention to input validation, access control, safety, testing, and response consistency.
+### Day 1 — Foundations & Basic Assistant
 
-> **Project Goal:** Build a reliable assistant by combining language-model concepts with structured application logic and controlled tool execution.
+**Goal:** Build the foundation of the service assistant.
 
-## ✨ Key Features
+What we did:
 
-- **Bilingual Support:** Handles Arabic and English service-related questions.
-- **Question Handling:** Provides predefined answers to common service inquiries.
-- **Application Status Tracking:** Retrieves application status through a controlled, read-only tool.
-- **Input Validation:** Validates user inputs and requests clarification when information is missing.
-- **Access Control:** Checks record ownership before returning application information.
-- **Safety Guards:** Rejects unsupported actions and unsuitable requests.
-- **Testing & Evaluation:** Uses predefined test cases to verify expected behavior.
-- **Response Consistency:** Follows a structured response format.
+- Created a synthetic service directory containing predefined answers in Arabic and English.
+- Built a `FakeClient` to simulate an AI client without requiring an external API.
+- Implemented the `ask()` function to receive questions and return structured responses.
+- Defined a response contract containing:
+  - `trace_id`
+  - `answer`
+  - `model`
+  - `latency_ms`
+- Added input validation to handle empty or invalid questions.
+- Used assertions to verify the assistant's responses.
+- Saved baseline results as JSON.
 
-## 🛠️ Technical Concepts
+**What we learned:** How to structure a basic assistant, simulate model interactions, validate inputs, and test expected outputs.
 
-| Concept | Description |
+**Deliverable:** `baseline_results.json`
+
+### Day 1 Extra — Real Language Model Demonstration
+
+**Goal:** Explore how an actual language model generates responses.
+
+What we did:
+
+- Used Google's `FLAN-T5-small` model.
+- Integrated Hugging Face Transformers.
+- Ran inference locally on a CPU using Google Colab.
+- Tested the model with an English service-related question.
+- Recorded inference time and token counts.
+- Compared a real model demonstration with the deterministic mock implementation.
+
+**What we learned:** The difference between a simulated assistant and a real language model, including inference time and generated responses.
+
+**Deliverable:** `live_model_demo.ipynb`
+
+### Day 2 — Structured Data & Tool Integration
+
+**Goal:** Make the assistant capable of retrieving application information safely.
+
+What we did:
+
+- Created synthetic application records with unique reference numbers.
+- Introduced user identity and ownership verification.
+- Built `extract_ticket()` to extract ticket information using simple rules and regular expressions.
+- Implemented `validate_ticket()` to check the structure and validity of extracted information.
+- Developed a read-only `check_status()` tool to retrieve application statuses.
+- Built a routing function to determine whether a request should be answered, clarified, or rejected.
+- Added protection against unauthorized access.
+- Tested five different scenarios.
+- Verified that application records remained unchanged.
+- Checked that Day 1 functionality still worked through regression testing.
+
+**What we learned:** How to connect an assistant to tools, validate structured information, manage user permissions, and prevent unauthorized data access.
+
+**Deliverable:** `day2_results.json`
+
+### Day 3 — Safety Guards & Testing
+
+**Planned focus:** Improve the assistant's reliability and control how it handles different user requests.
+
+The planned work includes:
+
+- Introducing versioned prompts.
+- Adding input safety guards.
+- Building a structured processing pipeline.
+- Creating golden test cases.
+- Testing expected behavior across different inputs.
+- Improving consistency and handling unsupported requests.
+
+**Learning objective:** Understand how prompt design, safety checks, and systematic testing contribute to reliable LLM applications.
+
+**Status:** Planned / Not yet completed.
+
+### Day 4 — Evaluation, Caching & Finalization
+
+**Planned focus:** Evaluate the assistant and prepare the project for its final version.
+
+The planned work includes:
+
+- Implementing a cache for public answers.
+- Measuring application performance.
+- Evaluating response behavior.
+- Running regression tests.
+- Exporting final results.
+- Reviewing the complete project workflow.
+
+**Learning objective:** Understand how caching, evaluation, and performance measurements help improve AI application efficiency and reliability.
+
+**Status:** Planned / Not yet completed.
+
+---
+
+## 🛠️ Technologies & Tools
+
+| Technology | Purpose |
 |---|---|
 | Python | Core application development |
-| LLM Engineering | Language-model application design |
-| Prompt Engineering | Structured prompt design |
-| Tool Calling | Controlled external tool interactions |
-| Input Validation | Checking and validating user requests |
-| Access Control | Protecting user-specific information |
+| Google Colab | Development environment |
+| Hugging Face Transformers | Real-model demonstration |
+| FLAN-T5-small | Language model experiment |
 | JSON | Structured data and result storage |
-| Testing | Assertions and regression testing |
+| Regular Expressions | Ticket information extraction |
+| Assertions | Functional testing |
 
-## 🏗️ Project Architecture
+## 📂 Repository Structure
 
-The application follows a structured workflow:
+- `notebooks/` — Project notebooks.
+- `homework/` — Course exercises and assignments.
+- `result/core/` — Core project outputs.
+- `README.md` — Project documentation.
+- `Untitled2.ipynb` — Additional notebook.
 
-1. **User Input:** Receives a question in Arabic or English.
-2. **Input Validation:** Checks whether the request is valid.
-3. **Request Processing:** Identifies the requested service.
-4. **Tool Execution:** Retrieves application information when authorized.
-5. **Safety Checks:** Prevents unauthorized access and unsupported actions.
-6. **Response Generation:** Returns a structured response to the user.
+The main project notebook covers Days 1–2, while the real-model demonstration is maintained separately.
 
-## 🔒 Security & Reliability
+## 🚀 How to Run
 
-Security and reliability are important learning objectives in this project.
+1. Open the project notebook in Google Colab.
+2. Select a Python 3.9+ CPU runtime.
+3. Run the notebook cells in order.
+4. Review the generated outputs and test results.
 
-- Ownership verification before accessing application records.
-- No disclosure of another user's application status.
-- Missing information is handled through clarification requests.
-- Unsupported operations are rejected.
-- Synthetic data is used throughout the project.
+The core mock-based implementation does not require an API key, paid API, GPU, or additional package installation.
 
-## 🧪 Testing
+For the optional real-model demonstration, internet access is required to download the model and its dependencies.
 
-The project includes predefined test scenarios covering:
+## 🔒 Limitations & Considerations
 
-- Successful application status retrieval.
-- Missing reference numbers.
-- Non-existing application records.
-- Unsupported requests.
-- Unauthorized access attempts.
-
-## 🚀 Getting Started
-
-### Requirements
-
-- Python 3.9+
-- Google Colab
-- Internet connection for the optional real-model demonstration.
-
-### Run the Project
-
-1. Clone or download this repository.
-2. Open the project notebook in Google Colab.
-3. Select a Python runtime.
-4. Run the notebook cells in order.
-5. Review the generated outputs and test results.
-
-The core mock-based implementation does not require an API key or paid services.
-
-## ⚠️ Limitations
-
-- This is an educational project, not a production-ready service.
-- The core implementation uses a deterministic mock client rather than a live LLM.
+- The core application is a simulation, not a production-ready AI service.
+- The mock client does not generate responses using a real LLM.
 - All application records are synthetic.
-- Security and authentication mechanisms are simplified for learning purposes.
-- Test results do not guarantee general-purpose reliability.
+- Ownership verification is a teaching example, not production authentication.
+- Passing predefined tests does not guarantee general reliability.
+- The optional real-model demonstration is a limited experiment, not a full performance benchmark.
 
 ## 🎓 Learning Outcomes
 
-Through this project, I explored practical concepts in AI application engineering, including:
+Throughout this project, I explored:
 
-- Designing structured AI application workflows.
-- Understanding tool integration and controlled execution.
-- Implementing input validation and access control.
-- Building testable and reliable application components.
-- Understanding the difference between mock-based systems and real language models.
-- 
+- Building structured LLM application workflows.
+- Understanding the difference between mock clients and real language models.
+- Designing prompts and response contracts.
+- Integrating tools into assistant workflows.
+- Validating structured data and user inputs.
+- Implementing basic access-control logic.
+- Testing application behavior using predefined scenarios.
+- Understanding reliability and performance evaluation.
+
 ## 👩🏻‍💻 Author
 
 **Jana Kariri**
 
-Student & AI Enthusiast
+LLM Application Engineering Student | AI Enthusiast
 
 - [GitHub Profile](https://github.com/janakariri)
 - [SDAIA Academy](https://github.com/SDAIAAcademy)
 
+---
+
+*Developed as part of the LLM Application Engineering course (SDA-AIE-213).* 
 ---
 
 *Built as part of the LLM Application Engineering course — SDA-AIE-213.*
