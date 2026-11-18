@@ -1,6 +1,6 @@
-# 🤖 Murshid Mini — LLM Application Engineering Project
+# 🤖 Murshid Mini — LLM Application Engineering
 
-**Course:** LLM Application Engineering (SDA-AIE-213)  
+**Course:** LLM Application Engineering · SDA-AIE-213  
 **Instructor:** Meaad Al-Marri  
 **Developer:** Jana Kariri
 
@@ -8,111 +8,147 @@
 
 Murshid Mini is a fictional AI-powered service assistant developed as a four-day learning project using Python and Google Colab.
 
-The project explores how to build an assistant that understands service-related questions, retrieves application statuses through controlled tools, validates user requests, and handles responses safely.
+The assistant handles service-related questions, retrieves application statuses through authorized tools, validates user inputs, applies safety checks, and uses caching to improve efficiency.
 
-The project is designed to demonstrate the engineering concepts behind LLM applications, from basic question handling to testing, safety, and performance evaluation.
+The project demonstrates the engineering workflow behind building reliable LLM applications, from basic assistant development to testing, evaluation, and performance optimization.
 
-**Important:** The core application uses a deterministic mock client (`FakeClient`) rather than a live LLM. A separate notebook demonstrates a real language model.
+**Note:** The core implementation uses a deterministic `FakeClient` in mock mode rather than a live LLM. All application records are synthetic.
 
 ---
 
-## 📅 Project Development Journey
+## 📅 Development Progress
 
-The project is organized into four development days, with each day focusing on a different stage of LLM application engineering.
+| Day | Topic | Status |
+|---|---|---|
+| Day 1 | Foundations, mock client, response contract | Completed |
+| Day 1 Extra | Real-model demonstration using FLAN-T5-small | Completed |
+| Day 2 | Structured data, tool integration, validation and access control | Completed |
+| Day 3 | Prompt versioning, safety guards, pipeline and golden tests | Completed |
+| Day 4 | Caching, performance measurements, regression testing and export | Completed |
 
-### Day 1 — Foundations & Basic Assistant
+---
 
-**Goal:** Build the foundation of the service assistant.
+## Day 1 — Foundations & Basic Assistant
 
-What we did:
+**Objective:** Build the initial service assistant and establish its response structure.
 
-- Created a synthetic service directory containing predefined answers in Arabic and English.
-- Built a `FakeClient` to simulate an AI client without requiring an external API.
-- Implemented the `ask()` function to receive questions and return structured responses.
-- Defined a response contract containing:
+### What I implemented
+
+- Created a synthetic service directory with Arabic and English answers.
+- Built `FakeClient` to simulate model responses without an external API.
+- Implemented `ask(question)` to process user questions.
+- Defined a structured response contract:
   - `trace_id`
   - `answer`
   - `model`
   - `latency_ms`
-- Added input validation to handle empty or invalid questions.
-- Used assertions to verify the assistant's responses.
-- Saved baseline results as JSON.
+- Added input validation for empty and invalid questions.
+- Used assertions to verify expected responses.
+- Saved baseline results in JSON format.
 
-**What we learned:** How to structure a basic assistant, simulate model interactions, validate inputs, and test expected outputs.
+### Results
 
-**Deliverable:** `baseline_results.json`
+Tested three sample questions covering Arabic, English, and general assistance.
 
-### Day 1 Extra — Real Language Model Demonstration
+<badge color="success">All checks passed</badge>
 
-**Goal:** Explore how an actual language model generates responses.
+**Output:** `baseline_results.json`
 
-What we did:
+### Day 1 Extra — Real Model Demonstration
 
-- Used Google's `FLAN-T5-small` model.
 - Integrated Hugging Face Transformers.
-- Ran inference locally on a CPU using Google Colab.
-- Tested the model with an English service-related question.
-- Recorded inference time and token counts.
-- Compared a real model demonstration with the deterministic mock implementation.
+- Used `google/flan-t5-small`.
+- Ran local inference on CPU.
+- Recorded input/output tokens and inference time.
+- Compared the real-model experiment with the mock implementation.
 
-**What we learned:** The difference between a simulated assistant and a real language model, including inference time and generated responses.
+**Observed inference time:** 0.775 seconds.
 
-**Deliverable:** `live_model_demo.ipynb`
+**Output:** `live_model_demo.ipynb`
 
-### Day 2 — Structured Data & Tool Integration
+---
 
-**Goal:** Make the assistant capable of retrieving application information safely.
+## Day 2 — Structured Data & Tool Integration
 
-What we did:
+**Objective:** Enable the assistant to retrieve application information through controlled tools.
 
-- Created synthetic application records with unique reference numbers.
-- Introduced user identity and ownership verification.
-- Built `extract_ticket()` to extract ticket information using simple rules and regular expressions.
-- Implemented `validate_ticket()` to check the structure and validity of extracted information.
-- Developed a read-only `check_status()` tool to retrieve application statuses.
-- Built a routing function to determine whether a request should be answered, clarified, or rejected.
-- Added protection against unauthorized access.
-- Tested five different scenarios.
-- Verified that application records remained unchanged.
-- Checked that Day 1 functionality still worked through regression testing.
+### What I implemented
 
-**What we learned:** How to connect an assistant to tools, validate structured information, manage user permissions, and prevent unauthorized data access.
+- Created synthetic application records.
+- Added reference number extraction using `extract_ticket()`.
+- Implemented `validate_ticket()` to validate extracted information.
+- Developed the read-only `check_status()` tool.
+- Added ownership verification before accessing application records.
+- Implemented request routing using `route()`.
+- Handled missing references and unsupported actions.
+- Added regression tests to ensure Day 1 functionality remained intact.
 
-**Deliverable:** `day2_results.json`
+### Results
 
-### Day 3 — Safety Guards & Testing
+Tested five scenarios:
 
-**Planned focus:** Improve the assistant's reliability and control how it handles different user requests.
+| Test Scenario | Expected Result |
+|---|---|
+| Valid application reference | Status retrieved |
+| Missing reference number | Needs clarification |
+| Non-existing reference | Not found |
+| Cancellation request | Unsupported action |
+| Unauthorized record access | Access denied |
 
-The planned work includes:
+**Output:** `day2_results.json`
 
-- Introducing versioned prompts.
-- Adding input safety guards.
-- Building a structured processing pipeline.
-- Creating golden test cases.
-- Testing expected behavior across different inputs.
-- Improving consistency and handling unsupported requests.
+The tests also verified that application records remained unchanged.
 
-**Learning objective:** Understand how prompt design, safety checks, and systematic testing contribute to reliable LLM applications.
+---
 
-**Status:** Planned / Not yet completed.
+## Day 3 — Prompt Engineering & Safety Guards
 
-### Day 4 — Evaluation, Caching & Finalization
+**Objective:** Improve assistant reliability and control how requests are processed.
 
-**Planned focus:** Evaluate the assistant and prepare the project for its final version.
+### What I implemented
 
-The planned work includes:
+- Introduced prompt versioning to organize and maintain prompt configurations.
+- Added input safety guards to handle unsuitable or unsupported requests.
+- Built a structured processing pipeline.
+- Implemented golden test cases to verify expected assistant behavior.
+- Tested different input scenarios.
+- Improved request handling and response consistency.
+- Verified that the assistant follows the defined safety rules.
 
-- Implementing a cache for public answers.
-- Measuring application performance.
-- Evaluating response behavior.
-- Running regression tests.
-- Exporting final results.
-- Reviewing the complete project workflow.
+### Key Learning Outcomes
 
-**Learning objective:** Understand how caching, evaluation, and performance measurements help improve AI application efficiency and reliability.
+- Understanding prompt versioning.
+- Applying safety checks before processing requests.
+- Organizing assistant logic into a structured pipeline.
+- Using golden tests to validate expected behavior.
 
-**Status:** Planned / Not yet completed.
+**Status:** Completed.
+
+---
+
+## Day 4 — Caching, Evaluation & Finalization
+
+**Objective:** Improve application efficiency and validate the final workflow.
+
+### What I implemented
+
+- Added caching for public service answers.
+- Implemented cache handling to reuse previously generated public responses.
+- Measured application performance.
+- Evaluated response behavior and execution efficiency.
+- Ran regression tests to verify previously implemented functionality.
+- Exported project results for review and documentation.
+- Reviewed the complete application workflow.
+
+### Key Learning Outcomes
+
+- Understanding caching and its role in performance optimization.
+- Measuring application execution performance.
+- Evaluating application behavior.
+- Using regression testing to maintain functionality.
+- Organizing and exporting final project results.
+
+**Status:** Completed.
 
 ---
 
@@ -120,56 +156,58 @@ The planned work includes:
 
 | Technology | Purpose |
 |---|---|
-| Python | Core application development |
+| Python | Application development |
 | Google Colab | Development environment |
-| Hugging Face Transformers | Real-model demonstration |
-| FLAN-T5-small | Language model experiment |
-| JSON | Structured data and result storage |
-| Regular Expressions | Ticket information extraction |
-| Assertions | Functional testing |
+| Hugging Face Transformers | Model integration |
+| FLAN-T5-small | Real-model demonstration |
+| JSON | Data and results storage |
+| Regular Expressions | Reference extraction |
+| Assertions | Testing and validation |
+| Caching | Performance optimization |
 
 ## 📂 Repository Structure
 
-- `notebooks/` — Project notebooks.
-- `homework/` — Course exercises and assignments.
-- `result/core/` — Core project outputs.
-- `README.md` — Project documentation.
-- `Untitled2.ipynb` — Additional notebook.
-
-The main project notebook covers Days 1–2, while the real-model demonstration is maintained separately.
+| Directory / File | Description |
+|---|---|
+| `homework/` | Course homework and exercises |
+| `notebooks/` | Development notebooks |
+| `result/core/` | Core project results |
+| `Murshid_lab1-2.ipynb` | Main project notebook |
+| `live_model_demo.ipynb` | Real-model demonstration |
+| `README.md` | Project documentation |
 
 ## 🚀 How to Run
 
 1. Open the project notebook in Google Colab.
-2. Select a Python 3.9+ CPU runtime.
+2. Select a Python runtime.
 3. Run the notebook cells in order.
 4. Review the generated outputs and test results.
 
-The core mock-based implementation does not require an API key, paid API, GPU, or additional package installation.
+The core mock implementation does not require an API key or paid service.
 
-For the optional real-model demonstration, internet access is required to download the model and its dependencies.
+The optional real-model demonstration requires internet access to download the model and its dependencies.
 
-## 🔒 Limitations & Considerations
+## 🔒 Limitations
 
-- The core application is a simulation, not a production-ready AI service.
-- The mock client does not generate responses using a real LLM.
+- The core application uses a simulated client rather than a production LLM.
 - All application records are synthetic.
-- Ownership verification is a teaching example, not production authentication.
-- Passing predefined tests does not guarantee general reliability.
-- The optional real-model demonstration is a limited experiment, not a full performance benchmark.
+- Ownership verification is a learning example, not production authentication.
+- The real-model demonstration is limited and does not represent a full benchmark.
+- Passing predefined test cases does not guarantee general reliability.
 
-## 🎓 Learning Outcomes
+## 🎓 Key Learning Outcomes
 
-Throughout this project, I explored:
+Throughout this four-day project, I gained practical experience in:
 
-- Building structured LLM application workflows.
-- Understanding the difference between mock clients and real language models.
-- Designing prompts and response contracts.
+- Building structured LLM applications.
+- Working with mock clients and real language models.
+- Prompt engineering and prompt versioning.
 - Integrating tools into assistant workflows.
-- Validating structured data and user inputs.
-- Implementing basic access-control logic.
-- Testing application behavior using predefined scenarios.
-- Understanding reliability and performance evaluation.
+- Implementing input validation and safety guards.
+- Managing structured data and access control.
+- Creating automated tests and regression checks.
+- Applying caching and measuring performance.
+- Evaluating and documenting AI application workflows.
 
 ## 👩🏻‍💻 Author
 
@@ -182,11 +220,7 @@ LLM Application Engineering Student | AI Enthusiast
 
 ---
 
-*Developed as part of the LLM Application Engineering course (SDA-AIE-213).* 
----
+*Developed as part of the LLM Application Engineering course — SDA-AIE-213.*
 
-*Built as part of the LLM Application Engineering course — SDA-AIE-213.*
-
----
 
 *Built as part of the LLM Application Engineering course — SDA-AIE-213.*
