@@ -1,96 +1,123 @@
-# Murshid Mini — My Learning Project
+# 🤖 Murshid Mini — AI-Powered Service Assistant
 
-**LLM Application Engineering · SDA-AIE-213**
-Instructor: **Meaad Al-Marri** · Student: **Jana**
+**LLM Application Engineering | SDA-AIE-213**  
+**Instructor:** Meaad Al-Marri  
+**Developer:** Jana Kariri
 
-A small fictional service assistant, built step by step over four days in Google Colab. It answers known service questions, will read application status through an authorized tool, rejects unsuitable inputs, is tested against fixed cases, and caches public answers safely.
+---
 
-> **What this project is:** the core project runs in `mode=mock`. `FakeClient` is a finite, deterministic simulator, **not a live language model**. The goal is to learn the engineering around an LLM-shaped interface. All data is synthetic. No paid API, API key, GPU or extra package is needed for the core notebook.
+## 📌 Overview
 
-## Progress
+Murshid Mini is an educational AI application engineering project that demonstrates how to build a structured service assistant capable of understanding user requests, answering frequently asked questions, and retrieving application statuses through controlled tool interactions.
 
-| Day | Topic | Status |
-|---|---|---|
-| 1 | Foundations: synthetic directory, mock client, `ask`, response contract | Done |
-| 1 (extra) | Real-model demo with FLAN-T5 small on CPU | Done |
-| 2 | Structure and tools: validated ticket, read-only status lookup, ownership check | Done |
-| 3 | Guard and test: versioned prompt, input guards, pipeline, golden cases | Planned |
-| 4 | Measure and finish: public cache, measurements, regression, export | Planned |
+The project focuses on building reliable AI application workflows, with particular attention to input validation, access control, safety, testing, and response consistency.
 
-## Repository contents
+> **Project Goal:** Build a reliable assistant by combining language-model concepts with structured application logic and controlled tool execution.
 
-| File | Description |
+## ✨ Key Features
+
+- **Bilingual Support:** Handles Arabic and English service-related questions.
+- **Question Handling:** Provides predefined answers to common service inquiries.
+- **Application Status Tracking:** Retrieves application status through a controlled, read-only tool.
+- **Input Validation:** Validates user inputs and requests clarification when information is missing.
+- **Access Control:** Checks record ownership before returning application information.
+- **Safety Guards:** Rejects unsupported actions and unsuitable requests.
+- **Testing & Evaluation:** Uses predefined test cases to verify expected behavior.
+- **Response Consistency:** Follows a structured response format.
+
+## 🛠️ Technical Concepts
+
+| Concept | Description |
 |---|---|
-| [`Murshid_lab1-2.ipynb`](Murshid_lab1-2.ipynb) | Core project notebook, Days 1–2. Later days are appended to this same notebook. |
-| [`live_model_demo.ipynb`](live_model_demo.ipynb) | Optional, separate notebook: a real model generating one answer on CPU. |
-| [`murshid_outputs/`](murshid_outputs) | JSON results saved by the notebook: `baseline_results.json` (Day 1) and `day2_results.json` (Day 2). |
+| Python | Core application development |
+| LLM Engineering | Language-model application design |
+| Prompt Engineering | Structured prompt design |
+| Tool Calling | Controlled external tool interactions |
+| Input Validation | Checking and validating user requests |
+| Access Control | Protecting user-specific information |
+| JSON | Structured data and result storage |
+| Testing | Assertions and regression testing |
 
-## Day 1 — what I built
+## 🏗️ Project Architecture
 
-1. **Environment and mock client.** A synthetic service directory with an Arabic and an English answer, `save_json` for saving results, and `FakeClient`, which looks up fixed answers and counts its calls. It never calls an API.
-2. **Baseline application.** `ask(question)` returns a response contract with four fields: `trace_id`, `answer`, `model`, `latency_ms`. Blank or non-string input returns a polite message and makes no mock call.
-3. **Verification and milestone.** Assertions check the three known answers, the response fields, and that a blank question adds no mock call. Results are saved to `murshid_outputs/baseline_results.json`.
+The application follows a structured workflow:
 
-### Day 1 results
+1. **User Input:** Receives a question in Arabic or English.
+2. **Input Validation:** Checks whether the request is valid.
+3. **Request Processing:** Identifies the requested service.
+4. **Tool Execution:** Retrieves application information when authorized.
+5. **Safety Checks:** Prevents unauthorized access and unsupported actions.
+6. **Response Generation:** Returns a structured response to the user.
 
-| Question | Answer |
-|---|---|
-| `كيف أتابع طلبي؟` | `يمكنك متابعة حالة طلبك باستخدام رقم المرجع.` |
-| `How can I check my application status?` | `You can check your application status using its reference number.` |
-| `ساعدني` | `ما الخدمة التي تحتاج مساعدة بشأنها؟` |
+## 🔒 Security & Reliability
 
-All checks passed. `trace_id` values and `latency_ms` vary between runs, which is expected.
+Security and reliability are important learning objectives in this project.
 
-## Day 2 — what I built
+- Ownership verification before accessing application records.
+- No disclosure of another user's application status.
+- Missing information is handled through clarification requests.
+- Unsupported operations are rejected.
+- Synthetic data is used throughout the project.
 
-Added to the same notebook, below Day 1:
+## 🧪 Testing
 
-1. **Synthetic records and ticket.** Two fictional records (`REF-1001` owned by `demo-user-1`, `REF-1002` owned by `demo-user-2`), a trusted session identity, `extract_ticket` (simple rules and regex, not general NLP) and `validate_ticket` (exact keys, types, allowed values, and clarification consistency).
-2. **Read-only tool and routing.** `check_status` looks up a record and checks ownership before returning any status. `route` refuses cancellation, asks for clarification when the reference number is missing, and sends status requests to the tool.
-3. **Verification.** Five reference cases, a Day 1 regression check, and a check that the records are unchanged. Results are saved to `murshid_outputs/day2_results.json`.
+The project includes predefined test scenarios covering:
 
-### Day 2 results
+- Successful application status retrieval.
+- Missing reference numbers.
+- Non-existing application records.
+- Unsupported requests.
+- Unauthorized access attempts.
 
-| Question | Code | Tool calls |
-|---|---|---:|
-| `ما حالة طلبي REF-1001 في الرياض؟` | `under_review` | 1 |
-| `أريد حالة طلبي` (no reference) | `needs_clarification` | 0 |
-| `ما حالة REF-9999؟` (absent record) | `not_found` | 1 |
-| `ألغ طلبي REF-1001` (cancellation) | `unsupported_action` | 0 |
-| `ما حالة REF-1002؟` (another user's record) | `access_denied` | 1 |
+## 🚀 Getting Started
 
-Missing and unauthorized records both give the user the same outward message, so another user's status is never revealed. The identity check is a teaching fixture, not real authentication.
+### Requirements
 
-## Extra: real-model demonstration
+- Python 3.9+
+- Google Colab
+- Internet connection for the optional real-model demonstration.
 
-`live_model_demo.ipynb` runs **`google/flan-t5-small`** (a pinned revision) locally on CPU through Hugging Face `transformers`. It needs internet access to download the library and model weights, but no API key and no paid service. Use a separate runtime from the core notebook.
+### Run the Project
 
-Observed in my run:
+1. Clone or download this repository.
+2. Open the project notebook in Google Colab.
+3. Select a Python runtime.
+4. Run the notebook cells in order.
+5. Review the generated outputs and test results.
 
-| Item | Value |
-|---|---|
-| Question | `How can I check my application status?` |
-| Answer | `Use its reference number` |
-| Input tokens | 34 |
-| Output tokens (including special) | 6 |
-| Inference time | 0.775 s |
-| External inference API calls | 0 |
+The core mock-based implementation does not require an API key or paid services.
 
-This is one observation, not a benchmark. A non-empty answer is not proof of correctness; I checked that it points the user to the reference number and does not invent fees, dates or statuses. A small English-only example says nothing about Arabic quality or suitability for real deployment.
+## ⚠️ Limitations
 
-## How to run
+- This is an educational project, not a production-ready service.
+- The core implementation uses a deterministic mock client rather than a live LLM.
+- All application records are synthetic.
+- Security and authentication mechanisms are simplified for learning purposes.
+- Test results do not guarantee general-purpose reliability.
 
-1. Open `Murshid_lab1-2.ipynb` in [Google Colab](https://colab.research.google.com/) (File → Open notebook → GitHub, paste this repository's URL) with a Python 3.9+ CPU runtime.
-2. Run the cells in order from the top; Day 2 depends on Day 1. Nothing needs installing.
-3. For the optional demo, open `live_model_demo.ipynb` in a **separate** runtime and run the setup cell first. If Colab asks for a restart, restart and run all cells again.
+## 🎓 Learning Outcomes
 
-## Limitations
+Through this project, I explored practical concepts in AI application engineering, including:
 
-- The core project is a simulation. It does not train a model or measure live LLM quality, and it does not implement production security.
-- Keyword guards and ownership checks (in later days) are teaching examples, not real authentication.
-- Passing fixed example cases is not a general reliability guarantee.
-- Never add real personal or ministry records. Keep all data synthetic.
+- Designing structured AI application workflows.
+- Understanding tool integration and controlled execution.
+- Implementing input validation and access control.
+- Building testable and reliable application components.
+- Understanding the difference between mock-based systems and real language models.
+- 
+## 👩🏻‍💻 Author
 
-## Attribution
+**Jana Kariri**
 
-Based on the course **LLM Application Engineering · SDA-AIE-213**, instructor **Meaad Al-Marri**, with reference to the [SDAIA Academy GitHub account](https://github.com/SDAIAAcademy). Course reference repository: [almiyead-rgb/murshid-llm-application-engineering-sda-aie-213](https://github.com/almiyead-rgb/murshid-llm-application-engineering-sda-aie-213). This repository does not claim Academy endorsement or certification.
+Student & AI Enthusiast
+
+- [GitHub Profile](https://github.com/janakariri)
+- [SDAIA Academy](https://github.com/SDAIAAcademy)
+
+---
+
+*Built as part of the LLM Application Engineering course — SDA-AIE-213.*
+
+---
+
+*Built as part of the LLM Application Engineering course — SDA-AIE-213.*
